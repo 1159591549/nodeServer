@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router()
+const { SUCCESS_CODE, FAILURE_CODE } = require('../config/statusCode')
+
 // 获取菜单接口
 router.get('/getRouters', (req, res) => {
     let router = [
@@ -14,6 +16,7 @@ router.get('/getRouters', (req, res) => {
             component: 'components/daySum'
         },
     ]
-    res.response('10000', router)
+    // 用户信息
+    res.response(SUCCESS_CODE, { router, tokenInfo: req.user })
 })
 module.exports = router
