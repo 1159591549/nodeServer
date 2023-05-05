@@ -6,7 +6,6 @@ const commonApi = require('./router/common')
 
 // 内置中间件
 const express = require('express')
-const cors = require('cors')
 const expressJwt = require('express-jwt')
 const { jwtSecretKey } = require('./config/jwtSecretKey')
 const { SUCCESS_CODE, FAILURE_CODE } = require('./config/statusCode')
@@ -24,23 +23,24 @@ app.use((req, res, next) => {
     }
     next()
 })
+// 除了以common开头的接口之外，其余的接口都应该在请求头中携带token来判断用户是否登录
+app.use(expressJwt({ secret: jwtSecretKey }).unless({ path: [/^\/common\//] }))
+
+const cors = require('cors')
+// 接口支持跨域
+app.use(cors())
 
 // 该中间件使得post请求传过来的参数可以通过req.body获得
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-// 除了以common开头的接口之外，其余的接口都应该在请求头中携带token来判断用户是否登录
-app.use(expressJwt({ secret: jwtSecretKey }).unless({ path: [/^\/common\//] }))
-
-// 接口支持跨域
-app.use(cors())
 
 // 托管静态文件，并添加资源访问前缀
 app.use('/images', express.static('./images'))
 
 // 路由抽离
-app.use(getPost)
-app.use(dbApi)
-app.use(menuApi)
+app.use('/api', getPost)
+app.use('/api', dbApi)
+app.use('/api', menuApi)
 app.use('/common', commonApi)
 
 // 错误中间件
