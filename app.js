@@ -8,7 +8,7 @@ const commonApi = require('./router/common')
 const express = require('express')
 const expressJwt = require('express-jwt')
 const { jwtSecretKey } = require('./config/jwtSecretKey')
-const { SUCCESS_CODE, FAILURE_CODE } = require('./config/statusCode')
+const { SUCCESS_CODE, FAILURE_CODE, LOGINEXPIRED } = require('./config/statusCode')
 const app = express()
 
 // 定义全局中间件 这个中间件要放在第一个，最起码也要在app.use(expressJwt())中间件之前使用，否则可能因为注册顺序问题报错
@@ -45,8 +45,12 @@ app.use('/common', commonApi)
 
 // 错误中间件
 app.use(function (err, req, res, next) {
-    // 数据验证失败
-    if (err.name === 'UnauthorizedError') return res.response(FAILURE_CODE, [], "身份认证失败")
+    if (err.inner.message === 'No authorization token was found') {
+        return res.response(FAILURE_CODE, [], "未登录!")
+    }
+    if (err.inner.message === 'jwt expired') {
+        return res.response(LOGINEXPIRED, [], "登录过期,请重新登录!")
+    }
     // 未知错误
     res.response(FAILURE_CODE, [], err)
 })
