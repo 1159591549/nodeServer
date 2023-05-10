@@ -4,19 +4,19 @@ const { SUCCESS_CODE, FAILURE_CODE } = require('../config/statusCode')
 
 // 获取菜单接口
 router.get('/getRouters', (req, res) => {
-    let router = [
+    let menusList = [
         {
-            path: '/exchange',
-            name: 'exchange',
-            component: 'components/exchange',
+            path: '/',
+            name: '',
+            redirect: '/home'
         },
         {
-            path: '/daySum',
-            name: 'daySum',
-            component: 'components/daySum'
+            path: '/home',
+            name: 'home',
+            file: '/home/index.vue',
         },
     ]
     // 用户信息
-    res.response(SUCCESS_CODE, { router, tokenInfo: req.user })
+    res.response(SUCCESS_CODE, { menusList })
 })
 module.exports = router
