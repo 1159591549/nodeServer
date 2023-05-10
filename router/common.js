@@ -27,7 +27,7 @@ router.post('/login', (req, res) => {
             if (confirmPassword) {
                 let userinfo = { ...result[0], password: '', user_pic: '' }
                 let token = jwt.sign(userinfo, jwtSecretKey, { expiresIn: '10h' })
-                res.response(SUCCESS_CODE, { token, menusList }, '登录成功')
+                res.response(SUCCESS_CODE, { token }, '登录成功')
             } else {
                 res.response(FAILURE_CODE, [], '密码错误!')
             }
