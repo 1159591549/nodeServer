@@ -8,12 +8,39 @@ router.get('/getRouters', (req, res) => {
         {
             path: '/',
             name: '',
-            redirect: '/home'
+            redirect:'/home',
+            meta: {
+                title: '首页',
+                icon: ''
+            },
+            children: [
+                {
+                    path: 'home',
+                    name: 'home',
+                    meta:{
+                        component: '/home/index.vue',
+                    }
+                    
+                }
+            ]
         },
         {
-            path: '/home',
-            name: 'home',
-            file: '/home/index.vue',
+            path: '/permission',
+            name: 'permission',
+            meta: {
+                title: '权限',
+                icon: ''
+            },
+            redirect:'/permission/one',
+            children: [
+                {
+                    path: 'one',
+                    name: 'one',
+                    meta:{
+                        component: '/permission/index.vue',
+                    }
+                }
+            ]
         },
     ]
     // 用户信息
